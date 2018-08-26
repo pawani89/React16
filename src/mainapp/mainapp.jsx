@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Options from '../components/Options';
 import axios from 'axios';
 import ErrorBoundary from "../errorHandling/errorBoundaries"
-
+import Modal from '../components/modal'
 
 class MainApp extends Component {
     constructor(props) {
@@ -37,7 +37,9 @@ class MainApp extends Component {
                     selected: false
                 }
             ],
-            data2: {}
+            data2: {},
+            showModal: false,
+            clicks: 0
 
 
         };
@@ -73,15 +75,41 @@ class MainApp extends Component {
             data: [...selectedS]
         })
     }
+    handleShow = () => {
+        this.setState({ showModal: true });
+    }
+
+    handleHide = () => {
+        this.setState({ showModal: false });
+    }
+    handleClick2 = () => {
+        this.setState(prev => (
+            {
+                clicks: prev.clicks + 1
+            }
+        ))
+    }
     render() {
-        const { data, clicked } = this.state
+        const { data, clicked } = this.state;
+        const modal = this.state.showModal ? (
+            <Modal>
+                <div className="modal" >
+                    <p>Number of clicks: {this.state.clicks}</p>
+                    <button onClick={this.handleHide}>Hide</button>
+                    <button>click</button>
+                </div>
+            </Modal>
+        ) : null;
         return (
             <React.Fragment>
                 <h1>select from the following</h1>
                 <ErrorBoundary><Options data={data} handleClick={this.handleClick}></Options></ErrorBoundary>
+                <button onClick={this.handleShow}>Show</button>
 
+                <div onClick={this.handleClick2}>
 
-
+                    {modal}
+                </div>
             </React.Fragment>
         )
     }
